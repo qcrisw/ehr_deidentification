@@ -61,6 +61,6 @@ tag_sequence "$MODEL_CONFIG"
 ## This step uses the predictions from the previous step to de-id the text. We pass the original input file where the original text is present. We look at this text and the predictions and use both of these to de-id the text.
 ## De-identify the text - using deid_strategy=replace_informative doesn't drop the PHI from the text, but instead labels the PHI - which you can use to drop the PHI or do any other processing.
 ## If you want to drop the PHI automatically, you can use deid_strategy=remove
-deid_text --input_file "$INPUT_FILE" --predictions_file "$PREDICTIONS_FILE" --notation BILOU --deid_strategy replace_informative --output_file "$DEID_FILE" --span_constraint super_strict
+deid_text --input_file "$INPUT_FILE" --predictions_file "$PREDICTIONS_FILE" --notation BILOU --deid_strategy replace_tag_type --output_file "$DEID_FILE" --span_constraint super_strict
 
 echo "Output file is located at output directory"
