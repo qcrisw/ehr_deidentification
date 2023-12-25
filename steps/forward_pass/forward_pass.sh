@@ -43,7 +43,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-/root/miniconda3/envs/deid/bin/create_data --input_file "$INPUT_FILE" --output_file "$NER_DATASET_FILE" --sentencizer en_core_sci_sm --tokenizer clinical --notation BILOU  --mode predict --max_tokens 128 --max_prev_sentence_token 32 --max_next_sentence_token 32 --default_chunk_size 32 --ignore_label NA --token_text_key text --metadata_key meta --note_id_key note_id --label_key label --span_text_key spans
+create_data --input_file "$INPUT_FILE" --output_file "$NER_DATASET_FILE" --sentencizer en_core_sci_sm --tokenizer clinical --notation BILOU  --mode predict --max_tokens 128 --max_prev_sentence_token 32 --max_next_sentence_token 32 --default_chunk_size 32 --ignore_label NA --token_text_key text --metadata_key meta --note_id_key note_id --label_key label --span_text_key spans
 # STEP 3: SEQUENCE TAGGING
 ## Run the sequence model - specify parameters to the sequence model in the config file (model_config). The model will be run with the specified parameters. For more information of these parameters, please refer to huggingface (or use the docs provided).
 ## This file uses the argmax output. To use the recall threshold models (running the forward pass with a recall biased threshold for aggressively removing PHI) use the other config files.
@@ -55,12 +55,12 @@ done
 jq --arg ner_dataset_file "$NER_DATASET_FILE" '.test_file=$ner_dataset_file' "$MODEL_CONFIG" | sponge "$MODEL_CONFIG"
 jq --arg prediction_file "$PREDICTIONS_FILE" '.output_predictions_file=$prediction_file' "$MODEL_CONFIG" | sponge "$MODEL_CONFIG"
 
-/root/miniconda3/envs/deid/bin/tag_sequence "$MODEL_CONFIG"
+tag_sequence "$MODEL_CONFIG"
 
 # STEP 4: DE-IDENTIFY TEXT
 ## This step uses the predictions from the previous step to de-id the text. We pass the original input file where the original text is present. We look at this text and the predictions and use both of these to de-id the text.
 ## De-identify the text - using deid_strategy=replace_informative doesn't drop the PHI from the text, but instead labels the PHI - which you can use to drop the PHI or do any other processing.
 ## If you want to drop the PHI automatically, you can use deid_strategy=remove
-/root/miniconda3/envs/deid/bin/deid_text --input_file "$INPUT_FILE" --predictions_file "$PREDICTIONS_FILE" --notation BILOU --deid_strategy replace_informative --output_file "$DEID_FILE" --span_constraint super_strict
+deid_text --input_file "$INPUT_FILE" --predictions_file "$PREDICTIONS_FILE" --notation BILOU --deid_strategy replace_informative --output_file "$DEID_FILE" --span_constraint super_strict
 
 echo "Output file is located at output directory"

@@ -1,0 +1,5 @@
+Input file is located at /mnt/./test/input.jsonl
+NER dataset file is located at ./data/ner_datasets/test.jsonl
+Predictions file is located at ./data/predictions/predictions.jsonl
+Deid file is located at /mnt/./test/output.jsonl
+Model config file is located at ./steps/forward_pass/run/i2b2/predict_i2b2.json

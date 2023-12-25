@@ -1,4 +1,4 @@
-name: deid
+name: base
 channels:
   - conda-forge
   - pytorch
